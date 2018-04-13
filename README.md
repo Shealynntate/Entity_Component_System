@@ -32,10 +32,8 @@ In Editor mode, there are some built-in tools to modify entities in the scene th
 
 To the right of the game is the editor window. Here you can add, remove, and change entity components and render order, as well as alter global settings in the game.
 
-<ul style="list-style:none;">
-<li><img src="http://shealyntate.com/wp-content/uploads/2018/03/InspectorWindow-411x1024.png" alt="" width="300" class="alignnone size-large wp-image-455" /></li>
-<li><img src="http://shealyntate.com/wp-content/uploads/2018/03/HierarchyWindow.png" alt="" width="300" class="alignnone size-full wp-image-459" /></li>
-</ul>
+![Inspector Window](https://raw.githubusercontent.com/Shealynntate/Entity_Component_System/master/media/demo_images/InspectorWindow.png) 
+![Hierarchy Window](https://raw.githubusercontent.com/Shealynntate/Entity_Component_System/master/media/demo_images/HierarchyWindow.png) 
 
 <h4>Inspector Window</h4>
 Shows all the exposed data fields for all the components of the active entity. You can modify any of the data fields here for more precise control.
@@ -52,8 +50,8 @@ Shows any global settings for the scene, such as the scale factor (pixels per un
 
 <h3>Collisions</h3>
 
-Once the physics have been updated, the Collision System then checks for and resolves any collisions. Any entity with a collider component participates in this system. Every entity with a collider also has an Axis-Aligned Bounding Box (<span class='project-link' onclick='window.location.href="http://www.gamefromscratch.com/post/2012/11/26/GameDev-math-recipes-Collision-detection-using-an-axis-aligned-bounding-box.aspx"'>AABB</span>). First the system checks to see if two AABBs overlap, which is a relatively computationally inexpensive check. If they don't, it moves on. If they do, then it process to run a collision check on the objects' actual colliders.<br>
-If two entities with box colliders are involved, then the system uses the Separating Axis Theorem (<span class='project-link' onclick='window.location.href="https://gamedevelopment.tutsplus.com/tutorials/collision-detection-using-the-separating-axis-theorem--gamedev-169"'>SAT</span>) to do the check. Basically, the idea is if you can draw a straight line with any slope between the two boxes and not touch either of them, then they aren't overlapping. It turns out that you don't need to test every conceivable line, just the normals from the colliders.
+Once the physics have been updated, the Collision System then checks for and resolves any collisions. Any entity with a collider component participates in this system. Every entity with a collider also has an Axis-Aligned Bounding Box (AABB). First the system checks to see if two AABBs overlap, which is a relatively computationally inexpensive check. If they don't, it moves on. If they do, then it process to run a collision check on the objects' actual colliders.<br>
+If two entities with box colliders are involved, then the system uses the Separating Axis Theorem (SAT) to do the check. Basically, the idea is if you can draw a straight line with any slope between the two boxes and not touch either of them, then they aren't overlapping. It turns out that you don't need to test every conceivable line, just the normals from the colliders.
 
 ![Collision Diagram](https://raw.githubusercontent.com/Shealynntate/Entity_Component_System/master/media/demo_images/Collision_Diagram.png)
 
