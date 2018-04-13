@@ -1,0 +1,523 @@
+
+html 
+{
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+}
+
+body 
+{
+  font-family: 'Roboto', sans-serif;
+  color: white;
+  background-color: black;
+  letter-spacing: 0.1em;  
+}
+
+#small-screen
+{
+  display: none;
+}
+
+
+ul li
+{
+  list-style: none;
+}
+
+.editor-window input
+{
+  font-family: 'Oxygen Mono', sans-serif;
+}
+
+.editor-window li
+{
+  font-family: 'Oxygen', sans-serif;
+  font-weight: 100;
+  font-size: 0.9em;
+}
+
+.wrap#content-wrap
+{
+  margin: 50px 0;
+}
+
+#game-window-wrap
+{
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  padding-left: 30px;
+  max-width: 1500px;
+  max-height: 1000px;
+  min-width: 800px;
+  min-height: 480px;
+  width: 70vw;
+  height: 42vw;
+}
+
+#game-window-wrap #game-content 
+{
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+
+#game-window-wrap #game-content canvas 
+{
+  position: absolute;
+  image-rendering: pixelated;
+}
+
+#content-wrap .hidden,
+#game-window-wrap  .hidden
+{
+  display: none !important;
+}
+
+/*--------------------------------------------------------------
+  Editor Windows
+--------------------------------------------------------------*/
+
+/* FPS Display */
+#fps-wrap span
+{
+  position: absolute;
+  top: 0;
+  color: #00FF00;
+  font-size: 1.2em;
+  padding: 7px;
+}
+
+/*--------------------------------------------------------------
+  Content Window Overlays
+--------------------------------------------------------------*/
+
+.pan-tool
+{
+  cursor: -webkit-grab;
+}
+
+.pan-tool canvas
+{
+  pointer-events: none;
+}
+
+/* Input Fields */
+#content-wrap input
+{
+  display: inline-block;
+  width: 80px;
+  padding: 2px 3px;
+  background-color: #454545;
+  border: none;
+  color: white;
+  font-size: 0.8em;
+  pointer-events: all;
+}
+
+#content-wrap input[type = checkbox]
+{
+  width: 20px;
+}
+
+#content-wrap input::-webkit-input-placeholder,
+#content-wrap input::-moz-placeholder,
+#content-wrap input:-ms-input-placeholder,
+#content-wrap input:-moz-placeholder
+{
+  color: #888888;
+}
+
+/* Editor Button Lists */
+.button-list
+{
+  padding: 0;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.button-list li
+{
+  display: inline-block;
+  padding: 0.5em 1.0em;
+  margin: 0;
+  cursor: pointer;
+  
+  transition: background-color 0.3s ease;
+  -webkit-transition: background-color 0.3s ease;
+}
+
+.button-list li:hover
+{
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.button-list li:active,
+.button-list li.active
+{
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+ul li img
+{
+  pointer-events: none;
+}
+
+.button-list li img
+{
+  width: 1.25em;
+}
+
+.button-list li span
+{
+  display: block;
+  text-align: center;
+  font-size: 0.6em;
+  padding: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+/*--------------------------------------------------------------
+  Inspector Window
+--------------------------------------------------------------*/
+
+.editor-window-wrap
+{
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  font-size: 0.8em;
+  vertical-align: top;
+}
+
+/* Header Tabs */
+.inspector-header-wrap
+{
+  position: absolute;
+  top: -40px;
+  width: 100%;
+  background-color: #454545;
+  padding: 0;
+}
+
+#header-tab-list
+{
+  padding: 0;
+  margin: 0;
+}
+
+#header-tab-list li
+{
+  display: inline-block;
+  padding: 10px 20px 6px;
+  background-color: none;
+  cursor: pointer;
+}
+#header-tab-list li:hover
+{
+  background-color: #303030;
+}
+
+#header-tab-list li:active
+{
+  background-color: #353535;
+}
+
+#header-tab-list li.active
+{
+  background-color: #252525;
+}
+
+#header-tab-list img
+{
+  height: 20px;
+  pointer-events: none;
+}
+
+.inspector-button
+{
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  width: 1em;
+  height: 1em;
+  padding: 0.3em;
+  background-color: #454545;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.inspector-button:hover
+{
+  background-color: #606060;
+}
+
+.inspector-button:active
+{
+  background-color: #505050;
+}
+
+.inspector-button img
+{
+  width: 70%;
+  height: 70%;
+  vertical-align: center;
+}
+
+.inspector-button.add-button img
+{
+  width: 100%;
+  height: 100%;
+}
+
+.editor-window-wrap .editor-window
+{
+  padding: 10px;
+  padding-top: 15px;
+}
+
+.editor-window
+{
+  background-color: #252525;
+  min-height: 400px;
+}
+
+.editor-window:not(#inspector-window)
+{
+  padding: 10px;
+}
+
+/* Component Display */
+.component-wrap
+{
+  position: relative;
+}
+
+/* Component Header*/
+.component-wrap h2
+{
+  font-weight: 200;
+  font-size: 1.0em;
+  margin: 0;
+  padding-bottom: 5px;
+  color: #CCCCCC;
+}
+
+.component-header-wrap h2
+{
+  display: inline-block;
+}
+
+.component-data-wrap
+{
+  border-top: 1px solid #454545;
+  padding: 0.8em;
+}
+
+.component-data
+{
+  position: relative;
+}
+
+.component-data h3
+{
+  margin: 0;
+  padding: 0;
+  font-size: 0.9em;
+  font-weight: 100;
+  color: #AAAAAA;
+}
+
+.component-data .component-field-list
+{
+  display: block;
+  padding-left: 0;
+  margin: 10px auto;
+}
+
+.component-data .component-field-list li
+{
+  display: inline-block;
+  padding-right: 0.5em;
+}
+
+/* Sprite Image Field */
+#sprite-image-data
+{
+  text-align: right;
+}
+
+#sprite-image-data h3
+{
+  display: inline-block;
+  position: absolute;
+  top: 50%;
+  left: 0;
+}
+
+#sprite-image-data ul
+{
+  display: inline-block;
+}
+
+#sprite-image-data ul img
+{
+  width: 4em;
+  height: 4em;
+  background-color: #AAAAAA;
+  cursor: pointer;
+}
+
+.button-wrap
+{
+  position: absolute;
+  top: 0;
+}
+
+.button-wrap#save-wrap
+{
+  right: 0;
+  vertical-align: top;
+}
+
+.button-wrap#game-mode-wrap
+{
+  left: 50%;
+}
+
+/*--------------------------------------------------------------
+  Add Component Window
+--------------------------------------------------------------*/
+.add-component-wrap
+{
+  display: inline-block;
+  background-color: #222222;
+  border: 5px solid #454545;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.add-component-wrap h2
+{
+  font-size: 0.8em;
+  font-weight: 100;
+  color: #AAAAAA;
+  padding: 0 10px;
+}
+
+.add-component-list
+{
+  text-align: center;
+  padding: 0 10px 20px;
+}
+
+.add-component-list li:first-child
+{
+  border-top: 1px solid #454545;
+  border-bottom: none;
+  padding: 0;
+}
+
+.add-component-list li
+{
+  padding: 10px 0;
+  border-bottom: 1px solid #454545;
+  cursor: pointer;
+  font-weight: 100;
+  transition: background-color 0.2s ease;
+  -webkit-transition: background-color 0.2s ease;
+}
+
+.add-component-list li:hover
+{
+  background-color: #454545;
+}
+
+.add-component-list li:active
+{
+  background-color: #AAAAAA;
+}
+
+/*--------------------------------------------------------------
+  Hierarchy Window
+--------------------------------------------------------------*/
+#scene-entity-hierarchy
+{
+  padding-left: 3px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  background-color: #353535;
+  width: 220px;
+}
+
+#scene-entity-hierarchy li
+{
+  cursor: pointer;
+}
+
+#scene-entity-hierarchy li:hover,
+#scene-entity-hierarchy li:hover input
+{
+  background-color: #454545;
+}
+
+#scene-entity-hierarchy li.active,
+#scene-entity-hierarchy li.active input
+{
+  background-color: #505050;
+}
+
+
+#scene-entity-hierarchy input
+{
+  background-color: #353535;
+  width: 100px;
+}
+
+/*--------------------------------------------------------------
+  Settings Window
+--------------------------------------------------------------*/
+#settings-window ul
+{
+  padding-left: 0;
+  padding-right: 35px;
+}
+
+#settings-window ul li
+{
+  padding-bottom: 30px;
+}
+#settings-window ul li input
+{
+  margin-right: 5px;
+}
+
+/*--------------------------------------------------------------
+  Small Window
+--------------------------------------------------------------*/
+@media screen and (max-width: 1100px)
+{
+  #game-window-wrap
+  {
+    display: none !important;
+  }
+
+  .editor-window-wrap
+  {
+    display: none !important;
+  }
+
+  #small-screen
+  {
+    display: block;
+    padding: 40px;
+    padding-left: 40px;
+    background-color: #555555;
+    text-align: center;
+    margin: 0 auto;
+  }
+}

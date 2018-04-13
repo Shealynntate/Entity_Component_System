@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Game Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset='UTF-8'>
+    <link href='css/game.css' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Oxygen+Mono' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Oxygen:100,300,400' rel='stylesheet' type='text/css'>
+
+    <script src='js/jquery-1.11.1.min.js' type='text/javascript'></script>
+    
+    <script src='js/math.js' type='text/Javascript'></script>
+    <script src='js/Canvas.js' type='text/Javascript'></script>
+
+    <script src='js/ECS.js' type='text/Javascript'></script>
+    <script src='js/GameTime.js' type='text/Javascript'></script>
+
+    <!-- Components -->
+    <script src='js/components/Transform.js' type='text/Javascript'></script>
+    <script src='js/components/Rigidbody.js' type='text/Javascript'></script>
+    <script src='js/components/BoxCollider.js' type='text/Javascript'></script>
+    <script src='js/components/Sprite.js' type='text/Javascript'></script>
+    <script src='js/components/UserInput.js' type='text/Javascript'></script>
+    <script src='js/components/AABBCollider.js' type='text/Javascript'></script>
+    <script src='js/components/Respawn.js' type='text/Javascript'></script>
+    <!-- Systems -->
+    <script src='js/systems/EditorMovementSystem.js' type='text/Javascript'></script>
+    <script src='js/systems/MovementSystem.js' type='text/Javascript'></script>
+    <script src='js/systems/CollisionSystem.js' type='text/Javascript'></script>
+    <script src='js/systems/SpriteRenderSystem.js' type='text/Javascript'></script>
+    <script src='js/systems/HealthSystem.js' type='text/Javascript'></script>
+    <!-- Editor -->
+    <script src='js/editor/EditorInterface.js' type='text/javascript'></script>
+    <script src='js/editor/PanelInterface.js' type='text/javascript'></script>
+    <script src='js/Mouse.js' type='text/Javascript'></script>
+    <!-- Editor : Controllers -->
+    <script src='js/editor/controllers/EditorController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/TransformController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/SpriteController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/RigidBodyController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/ColliderController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/HierarchyController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/RespawnController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/UserInputController.js' type='text/Javascript'></script>
+    <script src='js/editor/controllers/ControllerInterface.js' type='text/Javascript'></script>
+    <!-- Editor : Tools -->
+    <script src='js/editor/tools/Tool.js' type='text/Javascript'></script>
+    <script src='js/editor/tools/MoveTool.js' type='text/Javascript'></script>
+    <script src='js/editor/tools/RotateTool.js' type='text/Javascript'></script>
+    <script src='js/editor/tools/ScaleTool.js' type='text/Javascript'></script>
+    <script src='js/editor/tools/PanTool.js' type='text/Javascript'></script>
+    <script src='js/editor/tools/ToolInterface.js' type='text/Javascript'></script>
+    
+    <script src='js/levelData.js' type='text/javascript'></script>
+
+    <script src='js/Camera.js' type='text/javascript'></script>
+    <script src='js/hud.js' type='text/javascript'></script>
+    <script src='js/main.js' type='text/javascript'></script>
+  </head>
+
+  <body>
+    
+    <!-- <div class='button' id='backButton' onclick='window.location.href="http://www.shealyntate.com/web-platformer/"'>BACK</div> -->
+
+    <div class='wrap' id='content-wrap'>
+      <div class='wrap' id='game-window-wrap'>
+        <div id='game-content'>
+          <canvas height='900' id='backgroundCanvas' width='1500'></canvas>
+          <canvas height='900' id='midgroundCanvas' width='1500'>
+            <img src='media/midgroundTop.png'>
+            <img src='media/midgroundMid.png'>
+            <img src='media/midgroundBottom.png'>
+          </canvas>
+          <canvas height='900' id='foregroundCanvas' width='1500'>
+            <img height='240' id='pSprite0' src='media/rabbitRight.png' width='230'>
+            <img height='240' id='pSprite1' src='media/rabbitLeft.png' width='230'>
+            <img id='respawn_icon' src='media/icons/respawn_icon.png'>
+          </canvas>
+        </div>
+        <!-- FPS Display -->
+        <div class='wrap hidden' id='fps-wrap'>
+          <span>FPS: 60.0</span>
+        </div>
+        <!-- Tool mode buttons -->
+        <div class='wrap button-wrap' id='tool-wrap'>
+          <ul class='button-list tool-buttons' id='transform-tool-buttons'>
+            <li class='active' id='move-tool' onclick='javscript: Editor.setActiveTool(TOOL.PAN); '>
+              <img src='media/icons/move_icon.png'><span>Q</span>
+            </li>
+            <li id='move-tool' onclick='javscript: Editor.setActiveTool(TOOL.MOVE); '>
+              <img src='media/icons/drag_icon.png'><span>W</span>
+            </li>
+            <li id='rotate-tool' onclick='javscript: Editor.setActiveTool(TOOL.ROTATE); '>
+              <img src='media/icons/rotate_icon.png'><span>E</span>
+            </li>
+            <li id='scale-tool' onclick='javascript: Editor.setActiveTool(TOOL.SCALE); '>
+              <img src='media/icons/scale_icon.png'><span>R</span>
+            </li>
+          </ul>
+        </div>
+        <!-- Game mode buttons -->
+        <div class='wrap button-wrap' id='game-mode-wrap'>
+          <ul class='button-list game-mode-buttons'>
+            <li id='play-edit-button' onclick='javascript: Editor.switchModes(event.target.children[0]);'>
+              <img src='media/icons/play_icon.png'>
+            </li>
+          </ul>
+        </div>
+        <!-- State change buttons -->
+        <div class='wrap button-wrap' id='save-wrap'>
+          <ul class='button-list state-change-buttons'>
+            <li id='addButton' onclick='javascript: addEntity()'>
+                <img src='media/icons/plus_icon.png'>
+                <span>ADD</span>
+            </li>
+            <li id='deleteButton' onclick='javascript: deleteEntity()'>
+                <img src='media/icons/close_icon_black.png'>
+                <span>DEL</span>
+            </li>
+            <li id='duplicateButton' onclick='javascript: duplicateEntity()'>
+              <img src='media/icons/duplicate_icon.png'>
+              <span>DUP</span>
+            </li>
+            <li id='saveButton' onclick='javascript: saveLevelData()'>
+              <img src='media/icons/save_icon.png'>
+              <span>SAVE</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Add Component Window -->
+        <div class='wrap add-component-wrap hidden' id='add-component-window'>
+          <h2>Add Component</h2>
+          <ul class='add-component-list'>
+            <li></li>
+            <li id='add-component-sprite' onclick='javascript: addComponent(CTYPE.SPRITE);'>Sprite</li>
+            <li id='add-component-rigidbody' onclick='javascript: addComponent(CTYPE.RIGIDBODY);'>RigidBody</li>
+            <li id='add-component-collider' onclick='javascript: addComponent(CTYPE.BOX_COLLIDER);'>Collider</li>
+            <li id='add-component-respawn' onclick='javascript: addComponent(CTYPE.RESPAWN);'>Respawn</li>
+            <li id='add-component-user-input' onclick='javascript: addComponent(CTYPE.USER_INPUT);'>User Input</li>
+          </ul>
+        </div>
+        <!-- Select Texture Window -->
+        <div class='wrap add-component-wrap hidden' id='texture-select-window'>
+          <h2>Select Texture</h2>
+          <ul class='add-component-list'>
+            <li></li>
+            <li id='add-component-sprite' onclick='javascript: Editor.selectTexture(event.target.children[0]);'>
+              <img id='grassTile_01' src='media/grassTile_01.png'>
+            </li>
+            <li id='add-component-sprite' onclick='javascript: Editor.selectTexture(event.target.children[0]);'>
+              <img id='grassTile_04' src='media/grassTile_04.png'>
+            </li>
+            <li id='add-component-rigidbody' onclick='javascript: Editor.selectTexture(event.target.children[0]);'>
+              <img id='grassTile_02' src='media/grassTile_02.png'>
+            </li>
+            <li id='add-component-collider' onclick='javascript: Editor.selectTexture(event.target.children[0]);'>
+              <img id='media/grassTile_03.png' src='media/grassTile_03.png'>
+            </li>
+            <li id='add-component-respawn' onclick='javascript: Editor.selectTexture(event.target.children[0]);'>
+              <img id='media/treeTile_01.png' src='media/treeTile_01.png'>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Editor Window -->
+      <div class='wrap editor-window-wrap'>
+        <div class='wrap inspector-header-wrap'>
+          <ul id='header-tab-list'>
+            <li class='active' onclick='javascript: Editor.setActivePanel(event.target);'>
+              <img src='media/icons/magnifying_glass_icon.png'>
+            </li>
+            <li onclick='javascript: Editor.setActivePanel(event.target);'>
+              <img src='media/icons/hierarchy_icon.png'>
+            </li>
+            <li onclick='javascript: Editor.setActivePanel(event.target);'>
+              <img src='media/icons/settings_icon.png'>
+            </li>
+          </ul>
+          
+        </div>
+        <!-- Inspector Window -->
+        <div class='editor-window' id='inspector-window'>
+          <!-- Transform Data -->
+          <div class='wrap component-wrap' id='transform-data-wrap'>
+              <h2>Transform</h2>
+              <div class='inspector-button add-button' onclick='javascript: toggleAddComponentWindow();'>
+                <img src='media/icons/plus_icon_white.png'>
+              </div>
+            <div class='wrap component-data-wrap'>
+              <!-- Position Fields -->
+              <div class='component-data' id='position-data'>
+                <h3>Position</h3>
+                <ul class='component-field-list'>
+                  <li id='transform-position-field-x'>x: <input type='text' placeholder='----.--'></li>
+                  <li id='transform-position-field-y'>y: <input type='text' placeholder='----.--'></li>
+                </ul>
+              </div>
+              <!-- Scale Fields -->
+              <div class='component-data' id='scale-data'>
+                <h3>Scale</h3>
+                <ul class='component-field-list'>
+                  <li id='transform-scale-field-x'>x: <input type='text' placeholder='----.--'></li>
+                  <li id='transform-scale-field-y'>y: <input type='text' placeholder='----.--'></li>
+                </ul>
+              </div>
+              <!-- Rotation Fields -->
+              <div class='component-data' id='rotation-data'>
+                  <h3>Rotation</h3>
+                  <ul class='component-field-list'>
+                    <li id='transform-rotation-field'>angle: <input type='text' placeholder='----.--'></li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+          <!-- User Input -->
+          <div class='wrap component-wrap' id='user-input-data-wrap'>
+            <div class='wrap component-header-wrap'>
+              <h2>User Input</h2>
+              <div class='inspector-button' onclick='javascript: removeComponent(CTYPE.USER_INPUT);'>
+                  <img src='media/icons/close_icon_white.png'>
+              </div>
+            </div>
+              <div class='wrap component-data-wrap'>
+                <!-- Move Fields -->
+                <div class='component-data' id='user-input-move-data'>
+                  <h3>Move</h3>
+                  <ul class='component-field-list'>
+                    <li id='user-input-move-enable-field'>enable: <input type='checkbox'></li>
+                    <li id='user-input-move-speed-field'>speed: <input type='text' placeholder='----.--'></li>
+                  </ul>
+                </div>
+                <!-- Jump Fields -->
+                <div class='component-data' id='user-input-jump-data'>
+                  <h3>Jump</h3>
+                  <ul class='component-field-list'>
+                    <li id='user-input-jump-enable-field'>enable: <input type='checkbox'></li>
+                    <li id='user-input-jump-height-field'>height: <input type='text' placeholder='----.--'></li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+          <!-- Sprite Data -->
+          <div class='wrap component-wrap' id='sprite-data-wrap'>
+            <div class='wrap component-header-wrap'>
+              <h2>Sprite</h2>
+              <div class='inspector-button' onclick='javascript: removeComponent(CTYPE.SPRITE);'>
+                  <img src='media/icons/close_icon_white.png'>
+              </div>
+            </div>
+              <div class='wrap component-data-wrap'>
+                <!-- Image Fields -->
+                <div class='component-data' id='sprite-image-data'>
+                    <h3>Image</h3>
+                    <ul class='component-field-list'>
+                      <li id='sprite-image-field' onclick='javascript: toggleSelectTextureWindow();'>
+                        <img src=''>
+                      </li>
+                    </ul>
+                </div>
+                <!-- Tile Fields -->
+                <div class='component-data' id='sprite-tile-data'>
+                  <h3>Tile</h3>
+                  <ul class='component-field-list'>
+                    <li id='sprite-tile-field-x'>x: <input type='text' placeholder='----.--'></li>
+                    <li id='sprite-tile-field-y'>y: <input type='text' placeholder='----.--'></li>
+                  </ul>
+                </div>
+                <!-- Offset Fields -->
+                <div class='component-data' id='texture-image-data'>
+                  <h3>Offset</h3>
+                  <ul class='component-field-list'>
+                    <li id='sprite-offset-field-x'>x: <input type='text' placeholder='----.--'></li>
+                    <li id='sprite-offset-field-y'>y: <input type='text' placeholder='----.--'></li>
+                  </ul>
+                </div>
+              </div>
+          </div>
+          <!-- RigidBody Data -->
+          <div class='wrap component-wrap' id='rigidbody-data-wrap'>
+            <div class='wrap component-header-wrap'>
+              <h2>RigidBody</h2>
+              <div class='inspector-button' onclick='javascript: removeComponent(CTYPE.RIGIDBODY);'>
+                <img src='media/icons/close_icon_white.png'>
+              </div>
+            </div>
+            <div class='wrap component-data-wrap'>
+              <!-- Mass Field -->
+              <div class='component-data' id='rigidbody-mass-data'>
+                <ul class='component-field-list'>
+                  <li id='rigidbody-mass-field'>mass: <input type='text' placeholder='---.--'></li>
+                </ul>
+              </div>
+              <!-- Gravity Field -->
+              <div class='component-data' id='rigidbody-gravity-data'>
+                <h3>Gravity</h3>
+                <ul class='component-field-list'>
+                  <li id='rigidbody-use-gravity-field'>use: <input type='checkbox'></li>
+                  <li id='rigidbody-gravity-scalar-field'>scale: <input type='text' placeholder='---.--'></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- Collider Data -->
+          <div class='wrap component-wrap' id='collider-data-wrap'>
+            <div class='wrap component-header-wrap'>
+              <h2>Collider</h2>
+              <div class='inspector-button' onclick='javascript: removeComponent(CTYPE.BOX_COLLIDER);'>
+                <img src='media/icons/close_icon_white.png'>
+              </div>
+            </div>
+            <div class='wrap component-data-wrap'>
+
+              <!-- Trigger Field -->
+              <div class='component-data' id='collider-trigger-data'>
+                <ul class='component-field-list'>
+                  <li id='collider-trigger-field'>trigger: <input type='checkbox'></li>
+                </ul>
+              </div>
+              <!-- Scale Fields -->
+              <div class='component-data' id='collider-scale-data'>
+                  <h3>Scale</h3>
+                  <ul class='component-field-list'>
+                    <li id='collider-scale-field-x'>x: <input type='text' placeholder='----.--'></li>
+                    <li id='collider-scale-field-y'>y: <input type='text' placeholder='----.--'></li>
+                  </ul>
+              </div>
+              <!-- Offset Fields -->
+              <div class='component-data' id='collider-scale-data'>
+                  <h3>Offset</h3>
+                  <ul class='component-field-list'>
+                    <li id='collider-offset-field-x'>x: <input type='text' placeholder='----.--'></li>
+                    <li id='collider-offset-field-y'>y: <input type='text' placeholder='----.--'></li>
+                  </ul>
+              </div>
+            </div>
+          </div>
+          <!-- Respawn Data -->
+          <div class='wrap component-wrap' id='respawn-data-wrap'>
+              <div class='wrap component-header-wrap'>
+                <h2>Respawn</h2>
+                <div class='inspector-button' onclick='javascript: removeComponent(CTYPE.RESPAWN);'>
+                  <img src='media/icons/close_icon_white.png'>
+                </div>
+              </div>
+              <div class='wrap component-data-wrap'>
+                <!-- Position Fields -->
+                <div class='component-data' id='respawn-position-data'>
+                  <h3>Position</h3>
+                  <ul class='component-field-list'>
+                    <li id='respawn-position-field-x'>x: <input type='text' placeholder='----.--'></li>
+                    <li id='respawn-position-field-y'>y: <input type='text' placeholder='----.--'></li>
+                  </ul>
+                </div>
+                <!-- Rotation Field -->
+                <div class='component-data' id='respawn-rotation-data'>
+                  <h3>Rotation</h3>
+                  <ul class='component-field-list'>
+                    <li id='respawn-rotation-field'>x: <input type='text' placeholder='----.--'></li>
+                  </ul>
+                </div>
+                <!-- OnDeath Field -->
+                <div class='component-data' id='respawn-ondeath-data'>
+                  <ul class='component-field-list'>
+                    <li id='respawn-ondeath-field'>on death: <input type='checkbox'></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+        </div>
+        <!-- Hierarchy Window -->
+        <div class='editor-window hidden' id='hierarchy-window'>
+          <div class='wrap component-wrap'>
+            <ul id='scene-entity-hierarchy'>
+            </ul>
+          </div>
+        </div>
+        <!-- Settings Window -->
+        <div class='editor-window hidden' id='settings-window'>
+          <div class='wrap component-wrap'>
+            <ul class='component-field-list'>
+              <li id='pixels-per-meter-field'>Pixels Per Unit: <input type='text' placeholder='100'></li>
+              <li id='death-line-field'>Death Line: <input type='text' placeholder='-3'>y</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Small Window Message -->
+      <div id='small-screen'>
+        <p>Oops it looks like your screen is a bit small. 
+        <br><br> Please try again with a larger browser window.</p>
+      </div>
+    
+      <!-- TODO -->
+          <div class='window hidden' id='colorSelectWindow'>
+            <h1>
+              Colors
+              <canvas height='200' id='colorPalette' width='300'>
+                <img id='palette' src='media/pixelPalette.png'>
+              </canvas>
+            </h1>
+          </div>
+        <!--
+        </div>
+      </div>
+   
+    -->
+  
+  
+  </div>
+  </body>
+</html>
